@@ -71,6 +71,10 @@ And use this command to export your domain settings:
 Get-MsolDomainFederationSettings -DomainName "{your-domain}" | Export-Clixml dfs-pf-samlp.xml
 ```
 
+The command to view the config is:
+```
+Get-MsolDomainFederationSettings -DomainName "{your-domain}" | Format-List *
+```
 
 Next you have to assign a licence to all your users
 
