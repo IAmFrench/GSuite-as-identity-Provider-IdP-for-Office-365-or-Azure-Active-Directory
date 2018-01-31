@@ -50,14 +50,17 @@ $Msolcred = Get-credential
 Connect-MsolService -Credential $MsolCred
 ```
 
-Now edit my sample `dfs-pf-samlp.xml` file with your Google Ids
+Now edit my sample `dfs-pf-samlp.xml` file with your Google Ids:
 
-Then import the config into powershell
+- `GOOGLESAMLID` and 
+- copy paste your certificate (from `GoogleIDPMetadata-{your-domain}.xml` file)
+
+Then import the config into powershell:
 ```
 $wsfed = Import-Clixml dfs-pf-samlp.xml
 ```
 
-And Set the domain as federated
+And Set the domain as federated:
 ```
 Set-MsolDomainAuthentication -DomainName "{your-domain}" -FederationBrandName $wsfed.FederationBrandName -Authentication Federated -PassiveLogOnUri $wsfed.PassiveLogOnUri -ActiveLogOnUri $wsfed.ActiveLogonUri -SigningCertificate $wsfed.Signi
 ngCertificate -IssuerUri $wsfed.IssuerUri -LogOffUri $wsfed.LogOffUri -PreferredAuthenticationProtocol "SAMLP"
@@ -74,3 +77,9 @@ Next you have to assign a licence to all your users
 and to set azure self service password reset to off:
 
 https://portal.azure.com/?l=en.en-us#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/PasswordReset
+
+Test the link with incognito mode or invite mode:
+1. From Office 365: https://www.office.com/
+2. From App launcher (Google App)
+
+![Google App launcher](https://i.imgur.com/UfVOBQ9.png)
