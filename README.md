@@ -1,5 +1,5 @@
 # GSuite-as-identity-Provider-IdP-for-Office-365-or-Azure-Active-Directory
-Finally manage to sync GSuite account with azure active directory!!!
+_Sync G Suite accounts with Azure active directory!_
 
 ## Google Admin requirements
 ### Set up SAML app (choose Microsoft Office 365)
@@ -18,6 +18,8 @@ Entity ID: `urn:federation:MicrosoftOnline`
 ![GSuite Office 365 Settings](https://i.imgur.com/0yEnR5m.png)
 
 ### Configure Provisioning
+
+_Ensure that you are using an administrator Azure Active Directory account that is not already linked to your existing Google account._
 
 > [GSuite Office 365 Provisioning settings Link](https://admin.google.com/AdminHome?fral=1#AppDetails:service=935556381546&flyout=provisioningSetupV2)
 
@@ -41,11 +43,14 @@ Download the `GoogleIDPMetadata-{your-domain}.xml` file:
 Then install all required tools (powershell tools)
 
 ![Required PowerShell tools](https://i.imgur.com/sSkF2vZ.png)
+https://www.microsoft.com/en-us/download/details.aspx?id=41950
 
 And start a powershell console:
+`Install-Module MSOnline`
+Enter your MS credentials.
 
-type this:
 ```
+Import-Module MSOnline
 $Msolcred = Get-credential
 Connect-MsolService -Credential $MsolCred
 ```
@@ -62,8 +67,7 @@ $wsfed = Import-Clixml dfs-pf-samlp.xml
 
 And Set the domain as federated:
 ```
-Set-MsolDomainAuthentication -DomainName "{your-domain}" -FederationBrandName $wsfed.FederationBrandName -Authentication Federated -PassiveLogOnUri $wsfed.PassiveLogOnUri -ActiveLogOnUri $wsfed.ActiveLogonUri -SigningCertificate $wsfed.Signi
-ngCertificate -IssuerUri $wsfed.IssuerUri -LogOffUri $wsfed.LogOffUri -PreferredAuthenticationProtocol "SAMLP"
+Set-MsolDomainAuthentication -DomainName "{your-domain}" -FederationBrandName $wsfed.FederationBrandName -Authentication Federated -PassiveLogOnUri $wsfed.PassiveLogOnUri -ActiveLogOnUri $wsfed.ActiveLogonUri -SigningCertificate $wsfed.SigningCertificate -IssuerUri $wsfed.IssuerUri -LogOffUri $wsfed.LogOffUri -PreferredAuthenticationProtocol "SAMLP"
 ```
 
 And use this command to export your domain settings:
@@ -76,9 +80,7 @@ The command to view the config is:
 Get-MsolDomainFederationSettings -DomainName "{your-domain}" | Format-List *
 ```
 
-Next you have to assign a licence to all your users
-
-and to set azure self service password reset to off:
+Next you have to assign a license to all your users and to set azure self service password reset to off:
 
 https://portal.azure.com/?l=en.en-us#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/PasswordReset
 
@@ -87,3 +89,8 @@ Test the link with incognito mode or invite mode:
 2. From App launcher (Google App)
 
 ![Google App launcher](https://i.imgur.com/UfVOBQ9.png)
+
+## Troubleshooting
+
+1. Delete the user from the Azure side.
+1. Wait a few hours for G Suite Auto Provisioning to work.
