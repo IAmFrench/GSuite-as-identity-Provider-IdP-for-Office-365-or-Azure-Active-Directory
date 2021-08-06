@@ -10,7 +10,8 @@ _Sync G Suite accounts with Azure active directory!_
 
 Note:
 
-ACS URL: `https://login.microsoftonline.com/login.srf`
+ACS URL: `https://login.microsoftonline.com/{YOUR_AAD_TENANT_ID}/saml2`
+  - ACS URL of `https://login.microsoftonline.com/login.srf` will also work, but may result in excessive sign-ins.
 
 Entity ID: `urn:federation:MicrosoftOnline`
 
